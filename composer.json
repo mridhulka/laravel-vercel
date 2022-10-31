@@ -28,5 +28,8 @@
             }
         }
     },
-    "require-dev": {}
+    "require-dev": {
+        "nunomaduro/larastan": "^2.0",
+        "orchestra/testbench": "^7.11"
+    }
 }
