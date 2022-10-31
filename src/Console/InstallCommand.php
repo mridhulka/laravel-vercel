@@ -12,7 +12,7 @@ class InstallCommand extends Command
 
     protected $signature = 'vercel:install';
 
-    protected $description = '';
+    protected $description = 'Publish assets required for deploying laravel on vercel.';
 
     private $vercelMaxMemory;
     private $vercelMaxDuration;
