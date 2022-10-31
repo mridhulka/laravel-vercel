@@ -1,0 +1,16 @@
+{
+    "version": 2,
+    "functions": {
+        "api/index.php": {
+            "runtime": "{{ vercelPHPVersion }}",
+            "memory": "{{ vercelMaxMemory }}",
+			"maxDuration": "{{ vercelMaxDuration }}"
+        }
+    },
+    "routes": [
+        {
+            "src": "/(.*)",
+            "dest": "/api/index.php"
+        }
+    ]
+}
