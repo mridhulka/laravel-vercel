@@ -1,6 +1,6 @@
 {
     "name": "mridhulka/laravel-vercel",
-    "description": "Publishes asset files required for deploying laravel on vercel.",
+    "description": "Publish assets required for deploying laravel on vercel.",
     "license": "MIT",
     "type": "library",
     "authors": [
