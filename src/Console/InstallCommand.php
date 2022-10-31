@@ -110,7 +110,7 @@ class InstallCommand extends Command
             $this->vercelMaxMemory = $vercelMaxMemory;
         } else {
             $this->vercelMaxMemory = 1024;
-            $this->vercelMaxDuration = 5;
+            $this->vercelMaxDuration = 10;
         }
     }
 
@@ -182,9 +182,7 @@ class InstallCommand extends Command
             }
 
             $this->call('vendor:publish', $params);
-            /* if(is_array($this->vercelPHPVersionOption) || is_string($this->vercelPHPVersionOption)){
-                return;
-            } */
+
             $this->infoTable($this->vercelPHPVersionOption, $this->vercelMaxMemory, $this->vercelMaxDuration);
             $this->info('Installation successfull');
         } catch (Exception $exception) {
