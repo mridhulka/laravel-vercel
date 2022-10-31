@@ -14,10 +14,12 @@ class InstallCommand extends Command
 
     protected $description = 'Publish assets required for deploying laravel on vercel.';
 
-    private $vercelMaxMemory;
-    private $vercelMaxDuration;
+    private mixed $vercelMaxMemory;
+    private mixed $vercelMaxDuration;
+    private array|string $vercelPHPVersionOption;
+    private array|false|string $vercelPHPVersion;
 
-    public function handle()
+    public function handle(): void
     {
         $this->info('-----------------------------------------');
         $this->info('Publishing the Vercel deployment files...');
@@ -27,31 +29,33 @@ class InstallCommand extends Command
 
 
         if (!$this->assetsExist()) {
-            return $this->publishAssets();
+            $this->publishAssets();
+            return;
         }
 
         if ($this->overwriteAssets()) {
             $this->warn('Warning: Overwriting assets...');
-            return $this->publishAssets(true);
+            $this->publishAssets(true);
+            return;
         }
         $this->warn('Exiting without overwriting asset files');
     }
 
-    private function assetsExist()
+    private function assetsExist(): bool
     {
         return file_exists(base_path('vercel.json'))
             or file_exists(base_path('.vercelignore'))
             or file_exists(base_path('api/index.php'));
     }
 
-    private function overwriteAssets()
+    private function overwriteAssets(): bool
     {
         return $this->confirm(
             'Asset files for Vercel already exist. Do you want to continue?'
         );
     }
 
-    private function showBasicInfo()
+    private function showBasicInfo(): void
     {
         $this->newLine();
         $this->info('More info at:');
@@ -60,7 +64,7 @@ class InstallCommand extends Command
         $this->info('https://vercel.com/docs/project-configuration#project-configuration/functions');
     }
 
-    private function validateInputs($vercelMaxMemory, $vercelMaxDuration)
+    private function validateInputs(mixed $vercelMaxMemory, mixed $vercelMaxDuration): void
     {
         $validator = Validator::make([
             'vercelMaxMemory' => $vercelMaxMemory,
@@ -93,11 +97,10 @@ class InstallCommand extends Command
         }
     }
 
-    public function setCustomServerlessFunctionProperties()
+    public function setCustomServerlessFunctionProperties(): void
     {
         if ($this->confirm('Do you want to set custom serverless function properties?')) {
             $this->showBasicInfo();
-
             $vercelMaxMemory = $this->ask('What should be the maximum allotted memory (in MB) for the serverless function?');
             $vercelMaxDuration = $this->ask('What should be the maximum allotted time (in seconds) for the serverless function?');
 
@@ -111,7 +114,7 @@ class InstallCommand extends Command
         }
     }
 
-    private function infoTable($vercelPHPVersion, $vercelMaxMemory, $vercelMaxDuration)
+    private function infoTable(array|string $vercelPHPVersion, mixed $vercelMaxMemory, mixed $vercelMaxDuration): void
     {
         $headers = ['Property', 'Value'];
 
@@ -133,7 +136,7 @@ class InstallCommand extends Command
         $this->table($headers, $data);
     }
 
-    private function choosePHPVersion()
+    private function choosePHPVersion(): void
     {
         $vercelPHPVersions = array_column(VercelPHPVersions::cases(), 'value');
 
@@ -142,11 +145,14 @@ class InstallCommand extends Command
             $vercelPHPVersions,
             1
         );
+        if (is_array($this->vercelPHPVersionOption)) {
+            return;
+        }
 
         $this->vercelPHPVersion = strstr($this->vercelPHPVersionOption,  ' ', true);
     }
 
-    private function publishAssets($forcePublish = false)
+    private function publishAssets(bool $forcePublish = false): void
     {
         try {
             $this->choosePHPVersion();
@@ -154,6 +160,10 @@ class InstallCommand extends Command
             $this->setCustomServerlessFunctionProperties();
 
             $stubContents = file_get_contents(__DIR__ . '/../../assets/vercel.json.stub');
+
+            if (!$stubContents) {
+                throw new Exception("Failed to get file contents.");
+            }
 
             $vars = ['{{ vercelPHPVersion }}', '"{{ vercelMaxMemory }}"', '"{{ vercelMaxDuration }}"'];
             $values = [$this->vercelPHPVersion, $this->vercelMaxMemory, $this->vercelMaxDuration];
@@ -172,6 +182,9 @@ class InstallCommand extends Command
             }
 
             $this->call('vendor:publish', $params);
+            /* if(is_array($this->vercelPHPVersionOption) || is_string($this->vercelPHPVersionOption)){
+                return;
+            } */
             $this->infoTable($this->vercelPHPVersionOption, $this->vercelMaxMemory, $this->vercelMaxDuration);
             $this->info('Installation successfull');
         } catch (Exception $exception) {
