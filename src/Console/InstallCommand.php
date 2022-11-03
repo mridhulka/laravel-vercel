@@ -9,7 +9,6 @@ use Mridhulka\LaravelVercel\Enums\VercelPHPVersions;
 
 class InstallCommand extends Command
 {
-
     protected $signature = 'vercel:install';
 
     protected $description = 'Publish assets required for deploying laravel on vercel.';
@@ -28,14 +27,16 @@ class InstallCommand extends Command
         $this->newLine();
 
 
-        if (!$this->assetsExist()) {
+        if (! $this->assetsExist()) {
             $this->publishAssets();
+
             return;
         }
 
         if ($this->overwriteAssets()) {
             $this->warn('Warning: Overwriting assets...');
             $this->publishAssets(true);
+
             return;
         }
         $this->warn('Exiting without overwriting asset files');
@@ -161,7 +162,7 @@ class InstallCommand extends Command
 
             $stubContents = file_get_contents(__DIR__ . '/../../assets/vercel.json.stub');
 
-            if (!$stubContents) {
+            if (! $stubContents) {
                 throw new Exception("Failed to get file contents.");
             }
 
@@ -174,7 +175,7 @@ class InstallCommand extends Command
 
             $params = [
                 '--provider' => "Mridhulka\LaravelVercel\LaravelVercelServiceProvider",
-                '--tag' => "assets"
+                '--tag' => "assets",
             ];
 
             if ($forcePublish === true) {

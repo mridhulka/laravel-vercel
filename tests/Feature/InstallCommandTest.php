@@ -2,9 +2,8 @@
 
 namespace Mridhulka\LaravelVercel\Tests\Feature;
 
-use Mridhulka\LaravelVercel\Tests\TestCase;
 use Mridhulka\LaravelVercel\Enums\VercelPHPVersions;
-
+use Mridhulka\LaravelVercel\Tests\TestCase;
 
 class InstallCommandTest extends TestCase
 {
@@ -14,7 +13,7 @@ class InstallCommandTest extends TestCase
         file_put_contents(base_path('vercel.json'), 'test contents');
         file_put_contents(base_path('.vercelignore'), 'test contents');
 
-        if (!is_dir(base_path('api'))) {
+        if (! is_dir(base_path('api'))) {
             mkdir(base_path('api'), 0777, true);
         }
         file_put_contents(base_path('api/index.php'), 'test contents');
@@ -42,11 +41,10 @@ class InstallCommandTest extends TestCase
     /** @test */
     public function it_does_not_overwrite_assets_when_instructed()
     {
-
         file_put_contents(base_path('vercel.json'), 'test contents');
         file_put_contents(base_path('.vercelignore'), 'test contents');
 
-        if (!is_dir(base_path('api'))) {
+        if (! is_dir(base_path('api'))) {
             mkdir(base_path('api'), 0777, true);
         }
         file_put_contents(base_path('api/index.php'), 'test contents');
@@ -69,7 +67,6 @@ class InstallCommandTest extends TestCase
     /** @test */
     public function it_publishes_the_asset_files()
     {
-
         $this->artisan('vercel:install')
             ->expectsQuestion('Select Vercel PHP version?', VercelPHPVersions::PHP81->value)
             ->expectsQuestion('Do you want to set custom serverless function properties?', 'y')
@@ -85,7 +82,6 @@ class InstallCommandTest extends TestCase
     /** @test */
     public function it_publishes_assets_with_default_values_if_custom_values_are_not_set()
     {
-
         $this->artisan('vercel:install')
             ->expectsQuestion('Select Vercel PHP version?', VercelPHPVersions::PHP81->value)
             ->expectsConfirmation('Do you want to set custom serverless function properties?', 'no')
@@ -95,10 +91,6 @@ class InstallCommandTest extends TestCase
             base_path('vercel.json')
         );
     }
-
-
-
-
 
     public function tearDown(): void
     {

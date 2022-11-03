@@ -32,7 +32,8 @@
         "nunomaduro/larastan": "^2.0",
         "orchestra/testbench": "^7.11",
         "phpunit/phpunit": "^9.5",
-        "pestphp/pest": "^1.22"
+        "pestphp/pest": "^1.22",
+        "friendsofphp/php-cs-fixer": "^3.13"
     },
     "config": {
         "allow-plugins": {
