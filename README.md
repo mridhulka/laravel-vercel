@@ -20,6 +20,8 @@ composer require mridhulka/laravel-vercel --dev
 php artisan vercel:install
 ```
 
+Answer all prompts to confirm the publishing of assets and also for customizing serverless functions.
+
 ## Testing
 
 You can run the tests with:
@@ -31,8 +33,9 @@ You can run the tests with:
 ## More info
 
 **[Customizing serverless functions - Vercel](https://vercel.com/blog/customizing-serverless-functions)**
+
 **[Function details - Vercel](https://vercel.com/docs/project-configuration#project-configuration/functions)**
 
 ## License
 
-The MIT License (MIT). Please see [License File](LICENSE.md) for more information.
+The MIT License (MIT). Please see [License File](LICENSE) for more information.
